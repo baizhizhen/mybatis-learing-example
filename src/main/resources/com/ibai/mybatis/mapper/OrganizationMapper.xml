@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ibai.mybatis.mapper.OrganizationMapper">
+    <cache-ref namespace="com.ibai.mybatis.mapper.UserMapper"/>
+    <resultMap id="baseResultMap" type="organization">
+        <!--<id column="organ_id" property="organId"/>-->
+        <!--<result column="name" property="name"/>-->
+        <!--<result column="code" property="code"/>-->
+        <!--<result column="email" property="email"/>-->
+        <!--<result column="telephone" property="telephone"/>-->
+        <!--<result column="status" property="status"/>-->
+        <!--<result column="author" property="author"/>-->
+        <!--<result column="birth" property="birth"/>-->
+        <!--<result column="token" property="token"/>-->
+    </resultMap>
+
+    <resultMap id="withRoleResultMap" type="organization">
+        <id property="organId" column="organ_id"/>
+        <result column="name" property="name"/>
+        <result column="code" property="code"/>
+        <result column="email" property="email"/>
+        <result column="telephone" property="telephone"/>
+        <result column="status" property="status"/>
+        <result column="author" property="author"/>
+        <result column="birth" property="birth"/>
+        <result column="toke" property="token"/>
+        <collection property="roles" column="role_id" ofType="role">
+            <id column="role_id" property="roleId"/>
+            <result column="role_name" property="roleName"/>
+            <result column="role_code" property="roleCode"/>
+            <result column="role_desc" property="roleDesc"/>
+            <result column="role_birth" property="birth"/>
+            <result column="role_status" property="status"/>
+        </collection>
+    </resultMap>
+
+    <sql id="allCols">
+        ${table}.organ_id,
+        ${table}.name,
+        ${table}.code,
+        ${table}.email,
+        ${table}.telephone,
+        ${table}.status,
+        ${table}.author,
+        ${table}.birth,
+        ${table}.token
+    </sql>
+    <insert id="insert" parameterType="organization" keyProperty="organId">
+        INSERT INTO t_organization(organ_id,name,code,email,telephone,status,author,birth,token)
+        VALUES (#{organId},#{name},#{code},#{email},#{telephone},#{status},#{author},#{birth},#{token})
+    </insert>
+    <update id="update">
+        UPDATE t_organization
+        <set>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="code != null">
+                code = #{code},
+            </if>
+            <if test="email != null">
+                email = #{email},
+            </if>
+            <if test="telephone != null">
+                telephone= #{telephone},
+            </if>
+            <if test="status != null">
+                status =#{status},
+            </if>
+            <if test="author != null">
+                author =#{author},
+            </if>
+            <if test="birth != null">
+                birth =#{birth},
+            </if>
+            <if test="token != null">
+                token =#{token}
+            </if>
+        </set>
+        WHERE organ_id = #{organId}
+    </update>
+    <select id="select" resultMap="baseResultMap" useCache="false">
+        SELECT
+        <include refid="allCols">
+            <property name="table" value="org"/>
+        </include>
+        FROM t_organization org
+        WHERE organ_id =#{organId}
+    </select>
+
+    <select id="selectByParams" resultMap="withRoleResultMap" useCache="false" parameterType="organization">
+        <if test="name != null">
+            <bind name="nameReg" value="'%'+name+'%'"/>
+        </if>
+        SELECT
+        <include refid="allCols">
+            <property name="table" value="org"/>
+        </include>
+        ,r.role_id role_id,
+        r.role_name role_name,
+        r.role_code role_code,
+        r.role_desc role_desc,
+        r.author role_author,
+        r.birth role_birth,
+        r.status role_status
+        FROM t_organization org
+        LEFT JOIN t_role r ON org.organ_id = r.organ_id
+        <where>
+            <choose>
+                <when test="organId != null">
+                    org.organ_id =#{organId}
+                </when>
+                <when test="name != null">
+                    org.name like #{nameReg}
+                </when>
+            </choose>
+            <if test="code != null">
+                AND org.code =#{code}
+            </if>
+        </where>
+        limit 1
+    </select>
+    <select id="selectToMap" resultType="java.util.Map">
+        SELECT
+        <include refid="allCols">
+            <property name="table" value="org"/>
+        </include>
+        FROM t_organization org
+        WHERE organ_id =#{organId}
+    </select>
+    <select id="selectList" resultType="com.ibai.mybatis.entity.Organization">
+        SELECT
+        <include refid="allCols">
+            <property name="table" value="org"/>
+        </include>
+        FROM t_organization org
+        WHERE organ_id in
+        <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
+</mapper>

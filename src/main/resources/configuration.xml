@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <properties resource="config.properties">
+        <property name="username" value="root"/>
+        <property name="password" value="xA123456"/>
+        <!-- If 'username' property not present, username become 'ut_user' -->
+        <property name="org.apache.ibatis.parsing.PropertyParser.enable-default-value" value="true"/>
+        <!--Change default value separator-->
+        <property name="org.apache.ibatis.parsing.PropertyParser.default-value-separator" value="?:"/>
+    </properties>
+    <settings>
+        <!--全局地开启或关闭配置文件中的所有映射器已经配置的任何缓存。只能关闭二级缓存,可以在flushCache设置为true，可以清除一二级缓存-->
+        <setting name="cacheEnabled" value="false"/>
+        <!--延迟加载的全局开关。当开启时，所有关联对象都会延迟加载。 特定关联关系中可通过设置fetchType属性来覆盖该项的开关状态。 默认值:false-->
+        <setting name="lazyLoadingEnabled" value="true"/>
+        <!--当开启时，任何方法的调用都会加载该对象的所有属性。否则，每个属性会按需加载。  默认值：false (true in ≤3.4.1)-->
+        <setting name="aggressiveLazyLoading" value="false"/>
+        <!--是否允许单一语句返回多结果集（需要兼容驱动）。同一个查询语句可以指定多个resultMap，默认值:true-->
+        <setting name="multipleResultSetsEnabled" value="true"/>
+        <!--？使用列标签代替列名。不同的驱动在这方面会有不同的表现， 具体可参考相关驱动文档或通过测试这两种不同的模式来观察所用驱动的结果。暂时不清楚设置为false有什么影响，默认值:true-->
+        <setting name="useColumnLabel" value="true"/>
+        <!--允许 JDBC 支持自动生成主键，需要驱动兼容。 如果设置为 true 则这个设置强制使用自动生成主键，尽管一些驱动不能兼容但仍可正常工作（比如 Derby）。-->
+        <!--上面的描述并不准确-->
+        <!--首先如果数据库的主键是自增键，那么即便插入语句中的值是null，也会设置自增键，就算是useColumnLabel设置为false-->
+        <!--其次useColumnLabel设置为true时，仅仅只是数据库中的主键是自增键的情况下，设置实体对象的键属性，如果为false则不会设置-->
+        <!--所以可以理解为useColumnLabel只是在true的情况下，设置实体的键属性值-->
+        <setting name="useGeneratedKeys" value="true"/>
+        <!--指定 MyBatis 应如何自动映射列到字段或属性。 NONE 表示取消自动映射；PARTIAL 只会自动映射没有定义嵌套结果集映射的结果集。 FULL 会自动映射任意复杂的结果集（无论是否嵌套）。-->
+        <setting name="autoMappingBehavior" value="PARTIAL"/>
+        <!--？指定发现自动映射目标未知列（或者未知属性类型）的行为。-->
+        <!--NONE: 不做任何反应-->
+        <!--WARNING: 输出提醒日志 ('org.apache.ibatis.session.AutoMappingUnknownColumnBehavior' 的日志等级必须设置为 WARN)-->
+        <!--FAILING: 映射失败 (抛出 SqlSessionException)-->
+        <!--不知道怎么复现-->
+        <setting name="autoMappingUnknownColumnBehavior" value="WARNING"/>
+        <!--配置默认的执行器。SIMPLE 就是普通的执行器；REUSE 执行器会重用预处理语句（prepared statements）； BATCH 执行器将重用语句并执行批量更新-->
+        <setting name="defaultExecutorType" value="SIMPLE"/>
+        <!--sql执行的超时时间-->
+        <setting name="defaultStatementTimeout" value="10"/>
+        <!--？为驱动的结果集获取数量（fetchSize）设置一个提示值。此参数只可以在查询设置中被覆盖。-->
+        <!--不清楚是设置以后结果集的数量超过这个值时，首先获取设置的数量，然后在循环获取剩余的结果-->
+        <setting name="defaultFetchSize" value="1000"/>
+
+        <setting name="safeRowBoundsEnabled" value="false"/>
+        <setting name="safeResultHandlerEnabled" value="true"/>
+
+        <!--是否开启自动驼峰命名规则（camel case）映射，即从经典数据库列名 A_COLUMN 到经典 Java 属性名 aColumn 的类似映射。-->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <!--MyBatis 利用本地缓存机制（Local Cache）防止循环引用（circular references）和加速重复嵌套查询。 默认值为 SESSION，这种情况下会缓存一个会话中执行的所有查询。 若设置值为 STATEMENT，本地会话仅用在语句执行上，对相同 SqlSession 的不同调用将不会共享数据。-->
+        <setting name="localCacheScope" value="SESSION"/>
+
+        <!--？当没有为参数提供特定的 JDBC 类型时，为空值指定 JDBC 类型。 某些驱动需要指定列的 JDBC 类型，多数情况直接用一般类型即可，比如 NULL、VARCHAR 或 OTHER。-->
+        <!--不清楚怎样才能看到这个设置的作用-->
+        <setting name="jdbcTypeForNull" value="OTHER"/>
+
+        <!--指定调用实体对象的那个方法可以触发一次延迟加载，默认值是：equals,clone,hashCode,toString-->
+        <setting name="lazyLoadTriggerMethods" value="equals,clone,hashCode,toString"/>
+
+        <!--指定动态 SQL 生成的默认语言。-->
+        <setting name="defaultScriptingLanguage" value="org.apache.ibatis.scripting.xmltags.XMLLanguageDriver"/>
+        <!--指定 Enum 使用的默认 TypeHandler 。 (从3.4.5开始)-->
+        <!--该typeHandler不支持自定义的oridial-->
+        <setting name="defaultEnumTypeHandler" value="org.apache.ibatis.type.EnumOrdinalTypeHandler"/>
+        <!--指定当结果集中值为 null 的时候是否调用映射对象的 setter（map 对象时为 put）方法，这对于有 Map.keySet() 依赖或 null 值初始化的时候是有用的。注意基本类型（int、boolean等）是不能设置成 null 的。-->
+        <setting name="callSettersOnNulls" value="true"/>
+        <!--当返回行的所有列都是空时，MyBatis默认返回null。 当开启这个设置时，MyBatis会返回一个空实例。 请注意，它也适用于嵌套的结果集 (i.e. collectioin and association)。（从3.4.2开始）-->
+        <setting name="returnInstanceForEmptyRow" value="true"/>
+        <!--指定 MyBatis 增加到日志名称的前缀-->
+        <!--log4j并不会打印出sql日志，不清楚原因-->
+        <!--<setting name="logPrefix" value="mapper."/>-->
+        <!--指定 MyBatis 所用日志的具体实现，未指定时将自动查找。-->
+        <setting name="logImpl" value="LOG4J"/>
+        <!--指定 Mybatis 创建具有延迟加载能力的对象所用到的代理工具。-->
+        <!--CGLIB | JAVASSIST-->
+        <setting name="proxyFactory" value="JAVASSIST"/>
+        <!--允许使用方法签名中的名称作为语句参数名称。 为了使用该特性，你的工程必须采用Java 8编译，并且加上-parameters选项。（从3.4.1开始）-->
+        <setting name="useActualParamName" value="true"/>
+        <!--指定一个提供Configuration实例的类。 这个被返回的Configuration实例用来加载被反序列化对象的懒加载属性值。 这个类必须包含一个签名方法static Configuration getConfiguration(). (从 3.2.3 版本开始)-->
+        <!--<setting name="configurationFactory" value=""/>-->
+    </settings>
+    <typeAliases>
+        <!--<typeAlias type="com.ibai.mybatis.entity.Organization" alias="organization"/>-->
+        <!--<typeAlias type="com.ibai.mybatis.entity.User" alias="user"/>-->
+        <package name="com.ibai.mybatis.entity"/>
+    </typeAliases>
+
+    <typeHandlers>
+        <!--指定超类型，子类查找类型处理器时可以找到，但是不能获取子类型的类型，后期可以参考枚举处理器的做法-->
+        <typeHandler handler="com.ibai.mybatis.typehandler.JsonTypeHandler" javaType="score"/>
+    </typeHandlers>
+
+    <!--MyBatis 每次创建结果对象的新实例时，它都会使用一个对象工厂（ObjectFactory）实例来完成-->
+    <objectFactory type="org.apache.ibatis.reflection.factory.DefaultObjectFactory">
+
+    </objectFactory>
+
+    <!--Executor (update, query, flushStatements, commit, rollback, getTransaction, close, isClosed)-->
+    <!--ParameterHandler (getParameterObject, setParameters)-->
+    <!--ResultSetHandler (handleResultSets, handleOutputParameters)-->
+    <!--StatementHandler (prepare, parameterize, batch, update, query)-->
+    <plugins>
+        <plugin interceptor="com.ibai.mybatis.plugins.QueryPlugin"></plugin>
+    </plugins>
+    <environments default="development">
+        <environment id="development">
+            <!--JDBC MANAGED-->
+            <transactionManager type="JDBC"/>
+            <!--POOLED UNPOOLED JNDI-->
+            <dataSource type="POOLED">
+                <property name="driver" value="${driver?:com.mysql.cj.jdbc.Driver}"/>
+                <property name="url"
+                          value="${url?:jdbc:mysql://localhost:3306/test?useUnicode=true&amp;characterEncoding=utf8&amp;serverTimezone=GMT}"/>
+                <property name="username" value="${username}"/>
+                <property name="password" value="${password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <mappers>
+        <package name="com.ibai.mybatis.mapper"/>
+        <!--<mapper resource="com/ibai/mybatis/mapper/UserMapper.xml"/>-->
+        <!--<mapper class="com.ibai.mybatis.mapper.OrganizationMapper"/>-->
+        <!--<mapper url="E:\mybatis-learning\src\main\java\com\ibai\mybatis\mapper\OrganizationMapper.java"/>-->
+    </mappers>
+</configuration>

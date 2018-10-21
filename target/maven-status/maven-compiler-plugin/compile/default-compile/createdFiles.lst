@@ -1,0 +1,4 @@
+com\ibai\mybatis\common\SessionFactory.class
+com\ibai\mybatis\entity\User.class
+com\ibai\mybatis\entity\Organization.class
+com\ibai\mybatis\mapper\UserMapper.class

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ibai.mybatis.mapper.UserMapper">
+    <cache flushInterval="100000" eviction="LRU" readOnly="true" size="1024"/>
+    <resultMap id="baseResultMap" type="user">
+        <!--<id column="userId" property="userId"/>-->
+        <!--<result column="employee_id" property="employeeId"/>-->
+        <!--<result column="account" property="account"/>-->
+        <!--<result column="password" property="password"/>-->
+        <!--<result column="nick_name" property="nickName"/>-->
+        <!--<result column="email" property="email"/>-->
+        <!--<result column="cellphone" property="cellPhone"/>-->
+        <!--<result column="qq" property="qq"/>-->
+        <!--<result column="latest_time" property="latestTime"/>-->
+        <!--<result column="latest_ip" property="latestIp"/>-->
+        <!--<result column="status" property="status"/>-->
+        <!--<result column="author" property="author"/>-->
+        <association column="organ_id" property="organization"
+                     fetchType="lazy"
+                     select="com.ibai.mybatis.mapper.OrganizationMapper.select">
+        </association>
+    </resultMap>
+    <sql id="baseCols">
+        user_id,
+        organ_id ,
+        employee_id ,
+        account,
+        password,
+        nick_name ,
+        email,
+        cellphone,
+        qq,
+        latest_time ,
+        latest_ip ,
+        status,
+        birth,
+        author
+    </sql>
+
+    <!--useCache 设置是否使用二级缓存，默认值:true-->
+    <select id="select" resultMap="baseResultMap" useCache="false">
+        SELECT
+        <include refid="baseCols"/>
+        FROM t_user u
+        WHERE u.user_id = #{userId}
+    </select>
+    <select id="selectAll" resultType="user">
+        SELECT
+        <include refid="baseCols"/>
+        FROM t_user
+    </select>
+</mapper>

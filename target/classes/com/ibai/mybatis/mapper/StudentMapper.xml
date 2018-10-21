@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ibai.mybatis.mapper.StudentMapper">
+    <resultMap id="baseResultMap" type="student">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="age" property="age"/>
+        <result column="password" property="password"/>
+        <result column="score" property="score" javaType="score"/>
+        <result column="gender" property="gender" javaType="gender"/>
+    </resultMap>
+    <sql id="baseCols">
+        id,
+        name,
+        age,
+        password,
+        score,
+        gender
+    </sql>
+    <select id="select" resultType="com.ibai.mybatis.entity.Student">
+        SELECT
+        <include refid="baseCols"/>
+        FROM student
+        WHERE id = #{id}
+    </select>
+</mapper>
